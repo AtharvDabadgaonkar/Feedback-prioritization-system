@@ -1,27 +1,80 @@
-# User Feedback & Feature Prioritization System (SaaS)
+# Signalboard — User Feedback & Feature Prioritization System
 
-An interactive product case study, shipped as a single self-contained HTML file (no build step, no dependencies). Open it directly, embed it in a portfolio, or host it on GitHub Pages.
+- Turn 1,000+ scattered signals into one ranked roadmap.
 
-## About
+Signalboard is an interactive product case study (SaaS) that shows how raw, messy
+user feedback becomes a clear, defensible product roadmap. Feedback arrives
+everywhere — surveys, support tickets, and reviews — so this workspace pulls it
+all into one place, scores every idea with RICE, and outputs a prioritized
+roadmap you can defend to any stakeholder.
 
-A prioritization workspace that aggregates **1,000+ inputs** from surveys, support tickets, and reviews, then ranks features with a live, drag-to-reorder **RICE** roadmap.
+It ships as a single self-contained HTML file — no build step, no dependencies,
+no package manager. Just open it in a browser and it runs.
 
-- Aggregation across 3 sources, clustered with SQL + Python
-- North Star metric + OKRs, RICE scoring
-- Drag any row to override the ranking and watch tiers recompute
+## Live demo
+
+Once GitHub Pages is enabled, the demo is live at:
+https://AtharvDabadgaonkar.github.io/Feedback-prioritization-system/
+
+## What it does
+
+Signalboard walks through the full prioritization loop a product manager runs
+every quarter:
+
+1. Aggregate — collect feedback from three separate channels into one stream.
+2. Cluster — group 1,000+ raw inputs into a handful of clear themes
+   (conceptually done with SQL and Python).
+3. Score — rate each theme on RICE so loud-but-low-impact requests can't jump
+   the queue.
+4. Rank and tier — sort everything into a Now / Next / Later roadmap, with the
+   option to manually override.
+
+The feedback comes from three sources: surveys (NPS and in-app), support tickets
+(Zendesk import), and product reviews (app stores and G2). All three feed a
+single pool of 1,000+ inputs, clustered into 6 themes.
+
+## Key features
+
+- A live count-up dashboard showing inputs streaming in from each source.
+- RICE scoring applied to every theme, with the score shown on each row.
+- A drag-to-reorder roadmap — drag any row to override the ranking and watch the
+  Now / Next / Later tiers recompute instantly.
+- Sort modes to switch between RICE score, Reach, or your own manual order.
+- A North Star metric and OKRs framing, so every feature ties back to a goal.
+- A responsive, animated UI with a reduced-motion fallback for accessibility.
+
+## The scoring model: why RICE, not gut feel
+
+Every theme gets four honest inputs instead of opinions. RICE stands for:
+
+- Reach — how many users this touches per quarter.
+- Impact — how much it moves the metric, per user.
+- Confidence — how much evidence backs the estimate.
+- Effort — person-weeks to build and ship it.
+
+The formula is:
+
+RICE = (Reach × Impact × Confidence) ÷ Effort
+
+A higher score means a higher spot in the roadmap.
+
+## Tech stack
+
+The front end is plain HTML, CSS, and vanilla JavaScript, all inline in one file.
+Fonts (Space Grotesk, Inter, JetBrains Mono) load from Google Fonts, which is the
+only external resource. The analysis side is conceptually done with SQL and
+Python for clustering and theme aggregation, and the methodology uses RICE
+prioritization, a North Star metric, and OKRs.
 
 ## Run locally
 
-Just open `index.html` in a browser. That's it.
+Just open index.html in any modern browser. No install, no server, no build.
 
-## Host on GitHub Pages
+## Project structure
 
-1. Push this folder to a repo.
-2. Settings → Pages → deploy from `main`, root folder.
-3. Your demo is live at:
-   `https://<username>.github.io/<repo>/`
+- index.html — the entire demo, all HTML, CSS, and JS inline.
+- README.md — this file.
+- HANDOFF.md — internal context notes.
 
-Because the demo is named `index.html`, GitHub Pages serves it at the repo root automatically.
-
----
-Built as a portfolio case study. Numbers reflect prototype user testing.
+## Author
+Atharv Dabadgaonkar
