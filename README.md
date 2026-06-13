@@ -21,12 +21,12 @@ https://AtharvDabadgaonkar.github.io/Feedback-prioritization-system/
 Signalboard walks through the full prioritization loop a product manager runs
 every quarter:
 
-1. Aggregate — collect feedback from three separate channels into one stream.
-2. Cluster — group 1,000+ raw inputs into a handful of clear themes
+1. Aggregate - collect feedback from three separate channels into one stream.
+2. Cluster - group 1,000+ raw inputs into a handful of clear themes
    (conceptually done with SQL and Python).
-3. Score — rate each theme on RICE so loud-but-low-impact requests can't jump
+3. Score - rate each theme on RICE so loud-but-low-impact requests can't jump
    the queue.
-4. Rank and tier — sort everything into a Now / Next / Later roadmap, with the
+4. Rank and tier - sort everything into a Now / Next / Later roadmap, with the
    option to manually override.
 
 The feedback comes from three sources: surveys (NPS and in-app), support tickets
@@ -47,10 +47,10 @@ single pool of 1,000+ inputs, clustered into 6 themes.
 
 Every theme gets four honest inputs instead of opinions. RICE stands for:
 
-- Reach — how many users this touches per quarter.
-- Impact — how much it moves the metric, per user.
-- Confidence — how much evidence backs the estimate.
-- Effort — person-weeks to build and ship it.
+- Reach - how many users this touches per quarter.
+- Impact - how much it moves the metric, per user.
+- Confidence - how much evidence backs the estimate.
+- Effort - person-weeks to build and ship it.
 
 The formula is:
 
@@ -72,9 +72,9 @@ Just open index.html in any modern browser. No install, no server, no build.
 
 ## Project structure
 
-- index.html — the entire demo, all HTML, CSS, and JS inline.
-- README.md — this file.
-- HANDOFF.md — internal context notes.
+- index.html - the entire demo, all HTML, CSS, and JS inline.
+- README.md - this file.
+- HANDOFF.md - internal context notes.
 
 ## Author
 Atharv Dabadgaonkar
