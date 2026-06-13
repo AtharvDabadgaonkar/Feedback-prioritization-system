@@ -4,7 +4,7 @@
 
 Signalboard is an interactive product case study (SaaS) that shows how raw, messy
 user feedback becomes a clear, defensible product roadmap. Feedback arrives
-everywhere - surveys, support tickets, and reviews — so this workspace pulls it
+everywhere - surveys, support tickets, and reviews - so this workspace pulls it
 all into one place, scores every idea with RICE, and outputs a prioritized
 roadmap you can defend to any stakeholder.
 
