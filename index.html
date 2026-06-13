@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signalboard — Feedback &amp; Prioritization System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg:#0d1018;
+    --bg2:#141926;
+    --panel:#1a2030;
+    --panel2:#202840;
+    --line:#2a3349;
+    --ink:#eef1f8;
+    --muted:#8b97b4;
+    --violet:#8b7bff;
+    --cyan:#3ad0c4;
+    --amber:#ffb84d;
+    --pink:#ff6b9d;
+    --green:#4ade80;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:
+      radial-gradient(1200px 500px at 80% -10%,rgba(139,123,255,.14),transparent),
+      radial-gradient(900px 500px at -10% 10%,rgba(58,208,196,.10),transparent),
+      var(--bg);
+    color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--violet);color:#fff}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  .bar{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;max-width:1120px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px}
+  .glyph{width:24px;height:24px;display:grid;place-items:center}
+  .glyph svg{width:24px;height:24px}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);border:1px solid var(--line);padding:5px 11px;border-radius:99px}
+
+  .hero{padding:30px 0 10px}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:16px}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(32px,5.2vw,56px);line-height:1.03;letter-spacing:-.02em;margin:0 0 16px;max-width:16ch}
+  h1 span{background:linear-gradient(90deg,var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lede{font-size:18px;color:var(--muted);max-width:56ch;margin:0}
+
+  .statband{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 17px}
+  .stat b{font-family:'Space Grotesk',sans-serif;font-size:23px;display:block;line-height:1.1}
+  .stat span{font-size:12px;color:var(--muted)}
+
+  /* dashboard */
+  .dash{margin:30px 0;background:var(--bg2);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+  .dashtop{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .dashtop .t{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px}
+  .live{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+  .live i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+
+  .dashgrid{display:grid;grid-template-columns:280px 1fr;min-height:520px}
+  @media(max-width:820px){.dashgrid{grid-template-columns:1fr}}
+
+  /* sources column */
+  .sources{border-right:1px solid var(--line);padding:18px;background:linear-gradient(180deg,var(--bg2),var(--bg))}
+  @media(max-width:820px){.sources{border-right:none;border-bottom:1px solid var(--line)}}
+  .colhead{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .source{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--line);border-radius:11px;margin-bottom:10px;background:var(--panel);position:relative;overflow:hidden}
+  .source .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;font-size:15px}
+  .source .meta{flex:1;min-width:0}
+  .source .meta b{font-size:13.5px;display:block}
+  .source .meta span{font-size:11.5px;color:var(--muted)}
+  .source .cnt{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan)}
+  .feedline{position:absolute;left:0;bottom:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--cyan));width:0;animation:flow 2.4s ease-in-out infinite}
+  @keyframes flow{0%{width:0;opacity:.3}50%{width:100%;opacity:1}100%{width:100%;opacity:.3}}
+
+  .agg{margin-top:18px;padding:14px;border:1px dashed var(--line);border-radius:12px;text-align:center}
+  .agg b{font-family:'Space Grotesk',sans-serif;font-size:30px;display:block;background:linear-gradient(90deg,var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .agg span{font-size:12px;color:var(--muted)}
+
+  /* roadmap column */
+  .roadmap{padding:18px}
+  .rmhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:8px}
+  .rmhead h3{margin:0;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600}
+  .sortby{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+  .sortbtn{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:5px 10px;border-radius:7px;cursor:pointer;transition:.15s}
+  .sortbtn:hover{color:var(--ink);border-color:var(--violet)}
+  .sortbtn.active{color:var(--bg);background:var(--cyan);border-color:var(--cyan);font-weight:600}
+  .hint{font-size:11.5px;color:var(--muted);margin:2px 0 14px;font-family:'JetBrains Mono',monospace}
+
+  .rtable{display:flex;flex-direction:column;gap:9px}
+  .rrow{display:grid;grid-template-columns:18px 1fr auto;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:grab;transition:transform .45s cubic-bezier(.16,1,.3,1),border-color .15s,box-shadow .15s}
+  .rrow:hover{border-color:var(--violet)}
+  .rrow.drag{opacity:.5;cursor:grabbing}
+  .rrow.over{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan)}
+  .grip{color:var(--muted);font-size:15px;line-height:1;cursor:grab}
+  .rmain b{font-size:14px;display:block;margin-bottom:5px}
+  .ricebar{display:flex;gap:5px;flex-wrap:wrap}
+  .pill{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:2px 7px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
+  .pill b{display:inline;color:var(--ink);font-size:10.5px}
+  .score{text-align:right}
+  .score .v{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;line-height:1}
+  .score .l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+  .rank{position:absolute}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:99px;margin-left:6px}
+  .b-now{background:rgba(74,222,128,.16);color:var(--green)}
+  .b-next{background:rgba(255,184,77,.16);color:var(--amber)}
+  .b-later{background:rgba(139,123,255,.16);color:var(--violet)}
+
+  /* RICE explainer */
+  .section{padding:46px 0}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:10px}
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(25px,3.6vw,36px);letter-spacing:-.01em;margin:0 0 8px}
+  .intro{color:var(--muted);max-width:60ch;margin:0 0 26px;font-size:16px}
+  .ricecards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:760px){.ricecards{grid-template-columns:1fr 1fr}}
+  @media(max-width:430px){.ricecards{grid-template-columns:1fr}}
+  .rc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:17px}
+  .rc .ltr{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;line-height:1}
+  .rc.r .ltr{color:var(--violet)}.rc.i .ltr{color:var(--cyan)}.rc.c .ltr{color:var(--amber)}.rc.e .ltr{color:var(--pink)}
+  .rc h4{margin:9px 0 4px;font-size:14px}
+  .rc p{margin:0;font-size:12.5px;color:var(--muted)}
+  .formula{margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 16px;text-align:center}
+  .formula b{color:var(--cyan)}
+
+  footer{border-top:1px solid var(--line);margin-top:24px;padding:24px 0 48px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted)}
+  .role-pill{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);border:1px solid var(--cyan);padding:3px 10px;border-radius:99px}
+
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="brand">
+    <span class="glyph"><svg viewBox="0 0 24 24" fill="none"><path d="M3 18c3-9 5-9 6 0s4 9 6-3 4-6 3-6" stroke="url(#g)" stroke-width="2.2" stroke-linecap="round"/><defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="0"><stop stop-color="#8b7bff"/><stop offset="1" stop-color="#3ad0c4"/></linearGradient></defs></svg></span>
+    Signalboard
+  </div>
+  <span class="tag">case study · product demo</span>
+</div>
+
+<header class="hero wrap">
+  <div class="eyebrow">User Feedback &amp; Feature Prioritization · SaaS</div>
+  <h1>Turn <span>1,000+ scattered signals</span> into one ranked roadmap.</h1>
+  <p class="lede">Feedback arrives everywhere — surveys, support tickets, reviews. This system pulls it into one place, scores every idea with RICE, and outputs a roadmap you can defend to any stakeholder. Drag a row below to feel how the ranking responds.</p>
+  <div class="statband">
+    <div class="stat"><b>1,000+</b><span>inputs aggregated</span></div>
+    <div class="stat"><b>3</b><span>sources unified</span></div>
+    <div class="stat"><b>RICE</b><span>scored &amp; ranked</span></div>
+    <div class="stat"><b>OKRs</b><span>tied to a North Star</span></div>
+  </div>
+</header>
+
+<!-- DASHBOARD -->
+<section class="wrap">
+  <div class="dash">
+    <div class="dashtop">
+      <div class="t">Prioritization workspace</div>
+      <div class="live"><i></i> aggregating live</div>
+    </div>
+    <div class="dashgrid">
+      <!-- sources -->
+      <div class="sources">
+        <div class="colhead">Incoming feedback</div>
+        <div class="source">
+          <div class="ic" style="background:rgba(139,123,255,.16);color:var(--violet)">◔</div>
+          <div class="meta"><b>Surveys</b><span>NPS &amp; in-app</span></div>
+          <div class="cnt" data-count="612">0</div>
+          <div class="feedline"></div>
+        </div>
+        <div class="source">
+          <div class="ic" style="background:rgba(58,208,196,.16);color:var(--cyan)">✉</div>
+          <div class="meta"><b>Support tickets</b><span>Zendesk import</span></div>
+          <div class="cnt" data-count="287">0</div>
+          <div class="feedline" style="animation-delay:.5s"></div>
+        </div>
+        <div class="source">
+          <div class="ic" style="background:rgba(255,184,77,.16);color:var(--amber)">★</div>
+          <div class="meta"><b>Product reviews</b><span>App stores &amp; G2</span></div>
+          <div class="cnt" data-count="143">0</div>
+          <div class="feedline" style="animation-delay:1s"></div>
+        </div>
+        <div class="agg">
+          <b data-count="1042">0</b>
+          <span>inputs · clustered into 6 themes via SQL + Python</span>
+        </div>
+      </div>
+
+      <!-- roadmap -->
+      <div class="roadmap">
+        <div class="rmhead">
+          <h3>Ranked roadmap</h3>
+          <div class="sortby">
+            <span>sort:</span>
+            <button class="sortbtn active" data-sort="rice">RICE score</button>
+            <button class="sortbtn" data-sort="reach">Reach</button>
+            <button class="sortbtn" data-sort="manual">Manual</button>
+          </div>
+        </div>
+        <div class="hint">↕ drag any row to override — ranking &amp; tiers recompute instantly</div>
+        <div class="rtable" id="rtable"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RICE -->
+<section class="section wrap">
+  <div class="kicker">The scoring model</div>
+  <h2>Why RICE, not gut feel</h2>
+  <p class="intro">Every theme gets four honest inputs. The formula keeps loud-but-low-impact requests from jumping the queue, and gives stakeholders a number to argue with instead of opinions.</p>
+  <div class="ricecards">
+    <div class="rc r"><div class="ltr">R</div><h4>Reach</h4><p>How many users this touches per quarter.</p></div>
+    <div class="rc i"><div class="ltr">I</div><h4>Impact</h4><p>How much it moves the metric, per user.</p></div>
+    <div class="rc c"><div class="ltr">C</div><h4>Confidence</h4><p>How much evidence backs the estimate.</p></div>
+    <div class="rc e"><div class="ltr">E</div><h4>Effort</h4><p>Person-weeks to build and ship it.</p></div>
+  </div>
+  <div class="formula">RICE = (Reach × Impact × Confidence) ÷ Effort &nbsp;→&nbsp; <b>higher score, higher in the roadmap</b></div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="role-pill">Product Manager · Analytics</span>
+    <span>SQL · Python · RICE · North Star &amp; OKRs · roadmapping</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // count-up for source numbers
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const target=+el.dataset.count;let v=0;const step=target/40;
+    if(reduce){el.textContent=target.toLocaleString();return;}
+    const id=setInterval(()=>{v+=step;if(v>=target){v=target;clearInterval(id);}el.textContent=Math.round(v).toLocaleString();},26);
+  });
+
+  // ---- roadmap data ----
+  let items=[
+    {name:"Smart resume-to-JD matching",reach:9,impact:3,conf:.9,effort:5},
+    {name:"Bulk apply with one tailored profile",reach:8,impact:2.5,conf:.85,effort:3},
+    {name:"Saved-search alerts (daily digest)",reach:7,impact:2,conf:.95,effort:2},
+    {name:"Interview prep generator",reach:6,impact:2,conf:.7,effort:4},
+    {name:"Salary insights on each role",reach:8,impact:1.5,conf:.8,effort:3},
+    {name:"Referral finder in your network",reach:4,impact:3,conf:.5,effort:6},
+  ];
+  items.forEach(it=>it.rice=+((it.reach*it.impact*it.conf)/it.effort).toFixed(1));
+  let manual=null; // manual order array of names
+  let sortMode='rice';
+
+  const table=document.getElementById('rtable');
+
+  function ordered(){
+    let arr=[...items];
+    if(sortMode==='rice') arr.sort((a,b)=>b.rice-a.rice);
+    else if(sortMode==='reach') arr.sort((a,b)=>b.reach-a.reach);
+    else if(sortMode==='manual' && manual) arr.sort((a,b)=>manual.indexOf(a.name)-manual.indexOf(b.name));
+    return arr;
+  }
+
+  function tier(i){
+    if(i<2)return['Now','b-now'];
+    if(i<4)return['Next','b-next'];
+    return['Later','b-later'];
+  }
+
+  function render(){
+    const arr=ordered();
+    table.innerHTML='';
+    arr.forEach((it,i)=>{
+      const [tname,tcls]=tier(i);
+      const row=document.createElement('div');
+      row.className='rrow';row.draggable=true;row.dataset.name=it.name;
+      row.innerHTML=`
+        <div class="grip">⋮⋮</div>
+        <div class="rmain">
+          <b>${it.name}<span class="badge ${tcls}">${tname}</span></b>
+          <div class="ricebar">
+            <span class="pill">R <b>${it.reach}k</b></span>
+            <span class="pill">I <b>${it.impact}</b></span>
+            <span class="pill">C <b>${Math.round(it.conf*100)}%</b></span>
+            <span class="pill">E <b>${it.effort}w</b></span>
+          </div>
+        </div>
+        <div class="score"><div class="v">${it.rice}</div><div class="l">RICE</div></div>`;
+      table.appendChild(row);
+    });
+    bindDrag();
+  }
+
+  // drag & drop
+  let dragEl=null;
+  function bindDrag(){
+    table.querySelectorAll('.rrow').forEach(row=>{
+      row.addEventListener('dragstart',()=>{dragEl=row;row.classList.add('drag');});
+      row.addEventListener('dragend',()=>{row.classList.remove('drag');table.querySelectorAll('.rrow').forEach(r=>r.classList.remove('over'));commitManual();});
+      row.addEventListener('dragover',e=>{e.preventDefault();
+        const after=getAfter(table,e.clientY);
+        table.querySelectorAll('.rrow').forEach(r=>r.classList.remove('over'));
+        if(after)after.classList.add('over');
+        if(after==null)table.appendChild(dragEl);
+        else table.insertBefore(dragEl,after);
+      });
+    });
+  }
+  function getAfter(c,y){
+    const els=[...c.querySelectorAll('.rrow:not(.drag)')];
+    return els.reduce((closest,child)=>{
+      const box=child.getBoundingClientRect();
+      const offset=y-box.top-box.height/2;
+      if(offset<0&&offset>closest.offset)return{offset,element:child};
+      return closest;
+    },{offset:-Infinity}).element;
+  }
+  function commitManual(){
+    manual=[...table.querySelectorAll('.rrow')].map(r=>r.dataset.name);
+    sortMode='manual';
+    document.querySelectorAll('.sortbtn').forEach(b=>b.classList.toggle('active',b.dataset.sort==='manual'));
+    // re-render only to update tier badges
+    render();
+  }
+
+  document.querySelectorAll('.sortbtn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      sortMode=b.dataset.sort;
+      document.querySelectorAll('.sortbtn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
