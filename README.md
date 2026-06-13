@@ -8,8 +8,7 @@ everywhere - surveys, support tickets, and reviews - so this workspace pulls it
 all into one place, scores every idea with RICE, and outputs a prioritized
 roadmap you can defend to any stakeholder.
 
-It ships as a single self-contained HTML file — no build step, no dependencies,
-no package manager. Just open it in a browser and it runs.
+ Just open it in a browser and it runs.
 
 ## Live demo
 
